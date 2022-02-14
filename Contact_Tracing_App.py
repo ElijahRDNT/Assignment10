@@ -1,8 +1,10 @@
 import cv2
 from pyzbar import pyzbar
+import datetime
 
 def decode_qrcode(frame):
     qrcodes = pyzbar.decode(frame)
+    d = datetime.datetime.now()
     for code in qrcodes:
         x, y , w, h = code.rect
         qrcode_data = code.data.decode('utf-8')
@@ -11,7 +13,9 @@ def decode_qrcode(frame):
         font = cv2.FONT_HERSHEY_DUPLEX
         cv2.putText(frame, qrcode_data, (x + 6, y - 6), font, 2.0, (255, 255, 255), 1)
         with open("contact_tracing.txt", mode ='w') as file:
-            file.write("DATA RETRIEVED:\n\n" + qrcode_data)
+            file.write("Date: = %s/%s/%s" % (d.day, d.month, d.year))
+            file.write("\nTime: = %s:%s:%s" % (d.hour, d.minute, d.second))
+            file.write("\n\nDATA RETRIEVED:\n\n" + qrcode_data)
     return frame
 
 
